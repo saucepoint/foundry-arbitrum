@@ -14,9 +14,18 @@ import {
     InsufficientSubmissionCost
 } from "@arbitrum/nitro-contracts/src/libraries/Error.sol";
 
+/// @title ArbitrumInboxMock
+/// @notice Replaces the canonical Arbitrum Inbox with a mock that *immediately* executes the message
+///         Normally, `createRetryableTicket` will execute ~10 mins after the L1 transaction is mined
+/// @notice This is intended to be used in Foundry tests, should not be used in production, and does
+///         not replace extensive testing.
+/// @notice Additional script-based testing (against local nitro nodes or testnet) is recommended
+/// @author saucepoint
 contract ArbitrumInboxMock is Inbox {
     uint256 public msgNum;
 
+    /// @dev Override ticket creation such that messages are immediately executed
+    ///      instead of being queued into the delayed inbox
     function unsafeCreateRetryableTicket(
         address to,
         uint256 l2CallValue,
@@ -55,6 +64,9 @@ contract ArbitrumInboxMock is Inbox {
         }
 
         // ----------------- BEGIN MODIFICATION -----------------
+        // Instead of queueing the message into the delayedInbox or the sequencer inbox
+        // we immediately execute the message against the target contract
+
         (bool success,) = to.call{value: l2CallValue}(data);
         require(success, "ArbitrumInboxMock: call failed");
 

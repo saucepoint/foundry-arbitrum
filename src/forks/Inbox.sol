@@ -1,6 +1,9 @@
 // Copyright 2021-2022, Offchain Labs, Inc.
 // For license information, see https://github.com/nitro/blob/master/LICENSE
 // SPDX-License-Identifier: BUSL-1.1
+//
+// This file is a modified version of the Arbitrum Inbox contract, where a
+// a function is marked as `virtual` for overriding in a child contract
 
 pragma solidity ^0.8.4;
 
