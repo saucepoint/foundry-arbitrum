@@ -6,7 +6,7 @@
 
 > 🚨 These utility mocks do not replace extensive testing (use of local nodes or testnet)
 
-Reusable, mocked Arbitrum contracts to enable cross-chain message testing within the [foundry](https://book.getfoundry.sh) testing environment
+Reusable, mocked Arbitrum contracts to enable cross-chain message testing within the [foundry](https://book.getfoundry.sh) environment
 
 *Assuming the messages are **successful**, is the state changing as expected?*
 
