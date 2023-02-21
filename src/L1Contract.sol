@@ -5,6 +5,8 @@ import {L2Contract} from "./L2Contract.sol";
 import {IInbox} from "@arbitrum/nitro-contracts/src/bridge/IInbox.sol";
 
 contract L1Contract {
+    uint256 public numberFromL2;
+
     address public immutable l2Target;
     IInbox public inbox;
 
@@ -25,5 +27,10 @@ contract L1Contract {
         inbox.createRetryableTicket{value: msg.value}(
             l2Target, 0, maxSubmissionCost, msg.sender, msg.sender, maxGas, gasPriceBid, data
         );
+    }
+
+    function handleMessageFromL2(uint256 number) external {
+        // Do something with the number
+        numberFromL2 = number;
     }
 }
