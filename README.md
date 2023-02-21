@@ -1,3 +1,5 @@
+ ## 🤫 This is a quiet release that is internally being tested. Feel free to try it out and provide feedback!
+
 # foundry-arbitrum
 
 > 🚧 Currently experimental and actively being dogfooded
