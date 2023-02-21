@@ -5,8 +5,8 @@ import "forge-std/Test.sol";
 import {ArbitrumInboxMock} from "../src/ArbitrumInboxMock.sol";
 import {ArbSysMock} from "../src/ArbSysMock.sol";
 
-import {L1Contract} from "../src/L1Contract.sol";
-import {L2Contract} from "../src/L2Contract.sol";
+import {L1Contract} from "../src/examples/L1Contract.sol";
+import {L2Contract} from "../src/examples/L2Contract.sol";
 
 contract ExampleTest is Test {
     ArbSysMock arbsys;
