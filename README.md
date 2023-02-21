@@ -1,38 +1,19 @@
 # foundry-arbitrum
 
-Mocked Arbitrum contracts (`Inbox.sol, ArbSys.sol`) to enable cross-chain message testing within [foundry](https://book.getfoundry.sh)
+Reusable, mocked Arbitrum contracts to enable cross-chain message testing within the [foundry](https://book.getfoundry.sh) testing environment
 
-> 🚧 Currently experimental, and does not replace extensive testing (local nodes or testnet)
+Mocked contracts will execute the messages without the delay that's observed in production
+
+> 🚧 Currently experimental
+
+> 🚨 These utility mocks do not replace extensive testing (use of local nodes or testnet)
 
 ---
 
 ## Usage
 
-Assumes your contracts are using the Arbitrum Inbox and the ArbSys precompile:
+In the test files, use the mock contracts:
 ```solidity
-import {IInbox} from "@arbitrum/nitro-contracts/src/bridge/IInbox.sol";
-
-// L1 Contract that sends messages to L2
-// calls `handleMessageFromL1(uint256 num)` on L2
-bytes memory data = abi.encodeWithSelector(L2Contract.handleMessageFromL1.selector, number);
-
-inbox.createRetryableTicket{value: msg.value}(
-    l2Target, 0, maxSubmissionCost, msg.sender, msg.sender, maxGas, gasPriceBid, data
-);
-```
-
-```solidity
-import {IArbSys} from "./interfaces/IArbSys.sol";
-
-// L2 Contract that sends a message to L1
-IArbSys constant arbsys = IArbSys(address(0x0000000000000000000000000000000000000064));
-
-bytes memory data = abi.encodeWithSelector(L1Contract.handleMessageFromL2.selector, number);
-arbsys.sendTxToL1(l1Target, data);
-```
-
-In the foundry tests, use the mock contracts such that cross-chain messages are executed:
-```
 import {ArbitrumInboxMock} from "saucepoint/foundry-arbitrum/ArbitrumInboxMock.sol";
 import {ArbSysMock} from "saucepoint/foundry-arbitrum/ArbSysMock.sol";
 
@@ -62,5 +43,48 @@ contract ExampleTest is Test {
 
         l2Contract.setL1Target(address(l1Contract));
     }
+
+    function testMessage() public {
+        // assert how cross-chain messages would modify state
+    }
 }
+```
+
+---
+
+Assumes your contracts are relying the Arbitrum `Inbox.sol` and the `ArbSys.sol` precompile:
+
+L1 Contract:
+```solidity
+import {IInbox} from "@arbitrum/nitro-contracts/src/bridge/IInbox.sol";
+
+// Arbitrum Inbox (message handler)
+IInbox public inbox;
+
+constructor(address _inbox, address _l2Target) {
+    inbox = IInbox(_inbox);
+    l2Target = _l2Target;
+}
+
+...
+
+// calls `handleMessageFromL1(uint256 num)` on L2
+bytes memory data = abi.encodeWithSelector(L2Contract.handleMessageFromL1.selector, number);
+
+inbox.createRetryableTicket{value: msg.value}(
+    l2Target, 0, maxSubmissionCost, msg.sender, msg.sender, maxGas, gasPriceBid, data
+);
+```
+
+L2 Contract:
+```solidity
+import {IArbSys} from "./interfaces/IArbSys.sol";
+
+// canonical precompile used to send messages to L1
+IArbSys constant arbsys = IArbSys(address(0x0000000000000000000000000000000000000064));
+
+...
+
+bytes memory data = abi.encodeWithSelector(L1Contract.handleMessageFromL2.selector, number);
+arbsys.sendTxToL1(l1Target, data);
 ```
