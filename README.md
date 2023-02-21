@@ -1,4 +1,4 @@
- ## 🤫 This is a quiet release that is internally being tested. Feel free to try it out and provide feedback!
+ ## 🤫 This is a quiet release that is internally being tested.  Feel free to try it out and provide feedback!
 
 # foundry-arbitrum
 
@@ -25,8 +25,8 @@ In the test files, apply the mock contracts:
 > Use `ArbSysMock` for L2 -> L1 messages
 
 ```solidity
-import {ArbSysMock} from "saucepoint/foundry-arbitrum/ArbSysMock.sol";
-import {ArbitrumInboxMock} from "saucepoint/foundry-arbitrum/ArbitrumInboxMock.sol";
+import {ArbSysMock} from "foundry-arbitrum/ArbSysMock.sol";
+import {ArbitrumInboxMock} from "foundry-arbitrum/ArbitrumInboxMock.sol";
 
 import {L1Contract} from "../src/L1Contract.sol";
 import {L2Contract} from "../src/L2Contract.sol";
