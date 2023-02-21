@@ -1,21 +1,30 @@
 # foundry-arbitrum
 
-Reusable, mocked Arbitrum contracts to enable cross-chain message testing within the [foundry](https://book.getfoundry.sh) testing environment
-
-Mocked contracts will execute the messages without the delay that's observed in production
-
-> 🚧 Currently experimental
+> 🚧 Currently experimental and actively being dogfooded
 
 > 🚨 These utility mocks do not replace extensive testing (use of local nodes or testnet)
+
+Reusable, mocked Arbitrum contracts to enable cross-chain message testing within the [foundry](https://book.getfoundry.sh) testing environment
+
+*Assuming the messages are **successful**, is the state changing as expected?*
 
 ---
 
 ## Usage
 
-In the test files, use the mock contracts:
+```bash
+forge install saucepoint/foundry-arbitrum
+```
+
+In the test files, apply the mock contracts:
+
+> Use `ArbitrumInboxMock` for L1 -> L2 messages
+
+> Use `ArbSysMock` for L2 -> L1 messages
+
 ```solidity
-import {ArbitrumInboxMock} from "saucepoint/foundry-arbitrum/ArbitrumInboxMock.sol";
 import {ArbSysMock} from "saucepoint/foundry-arbitrum/ArbSysMock.sol";
+import {ArbitrumInboxMock} from "saucepoint/foundry-arbitrum/ArbitrumInboxMock.sol";
 
 import {L1Contract} from "../src/L1Contract.sol";
 import {L2Contract} from "../src/L2Contract.sol";
@@ -45,14 +54,14 @@ contract ExampleTest is Test {
     }
 
     function testMessage() public {
-        // assert how cross-chain messages would modify state
+        // assert how *succesful* cross-chain messages would modify state
     }
 }
 ```
 
 ---
 
-Assumes your contracts are relying the Arbitrum `Inbox.sol` and the `ArbSys.sol` precompile:
+Intended for contracts relying on the Arbitrum `Inbox.sol` and the `ArbSys.sol` precompile:
 
 L1 Contract:
 ```solidity
@@ -85,6 +94,7 @@ IArbSys constant arbsys = IArbSys(address(0x000000000000000000000000000000000000
 
 ...
 
+// calls `handleMessageFromL2(uint256 num)` on L1
 bytes memory data = abi.encodeWithSelector(L1Contract.handleMessageFromL2.selector, number);
 arbsys.sendTxToL1(l1Target, data);
 ```
