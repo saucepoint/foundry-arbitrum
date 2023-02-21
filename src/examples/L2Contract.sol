@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {L1Contract} from "./L1Contract.sol";
-import {IArbSys} from "./interfaces/IArbSys.sol";
+import {IArbSys} from "../interfaces/IArbSys.sol";
 
 /// @title L2Contract
 /// @notice An example L2 contract that interacts with an L1 contract (sends & receives messages)
