@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {L1Contract} from "./L1Contract.sol";
-import {IArbSys} from "../interfaces/IArbSys.sol";
+import {ArbSys} from "@arbitrum/nitro-contracts/src/precompiles/ArbSys.sol";
 
 /// @title L2Contract
 /// @notice An example L2 contract that interacts with an L1 contract (sends & receives messages)
@@ -15,7 +15,7 @@ contract L2Contract {
     address public l1Target;
 
     // Arbitrum precompile, used to send messages to L1
-    IArbSys constant arbsys = IArbSys(address(0x0000000000000000000000000000000000000064));
+    ArbSys constant arbsys = ArbSys(address(0x0000000000000000000000000000000000000064));
 
     /// @notice Sends a message to the L1 contract (set a uint256)
     /// @param number The number to set on the L1 contract state
