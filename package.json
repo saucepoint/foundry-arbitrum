@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "@arbitrum/nitro-contracts": "^1.0.0",
-    "arb-bridge-eth": "^0.7.8",
-    "arbos-precompiles": "^1.0.2",
-    "patch-package": "^6.5.1"
+    "@arbitrum/nitro-contracts": "^1.0.1"
   }
 }
