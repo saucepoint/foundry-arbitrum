@@ -2,31 +2,22 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import {ArbitrumInboxMock} from "../src/ArbitrumInboxMock.sol";
-import {ArbSysMock} from "../src/ArbSysMock.sol";
+import {ArbitrumTest} from "../src/ArbitrumTest.sol";
 
 import {L1Contract} from "../src/examples/L1Contract.sol";
 import {L2Contract} from "../src/examples/L2Contract.sol";
 
-contract ExampleTest is Test {
-    ArbSysMock arbsys;
-    ArbitrumInboxMock inbox;
+contract ExampleTest is Test, ArbitrumTest {
     L1Contract l1Contract;
     L2Contract l2Contract;
 
     function setUp() public {
-        // L2 contracts explicitly reference 0x64 for the ArbSys precompile
-        // We'll replace it with the mock contract where L2-to-L1 messages are executed immediately
-        arbsys = new ArbSysMock();
-        vm.etch(address(0x0000000000000000000000000000000000000064), address(arbsys).code);
-
-        // use the mocked Arbitrum inbox where L1-to-L2 messages are executed immediately
-        inbox = new ArbitrumInboxMock();
-
         // Our L2 contract that will communicate with the L1 contract
+        // via ArbSys (mocked in ArbitrumTest)
         l2Contract = new L2Contract();
 
         // Our L1 contract that will communicate with the L2 contract
+        // via inbox (mock deployed in ArbitrumTest)
         l1Contract = new L1Contract(address(inbox), address(l2Contract));
 
         l2Contract.setL1Target(address(l1Contract));

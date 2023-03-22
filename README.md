@@ -1,5 +1,3 @@
- ## 🤫 This is a quiet release that is internally being tested.  Feel free to try it out and provide feedback!
-
 # foundry-arbitrum
 
 > 🚧 Currently experimental and actively being dogfooded
@@ -18,38 +16,25 @@ Reusable, mocked Arbitrum contracts to enable cross-chain message testing within
 forge install saucepoint/foundry-arbitrum
 ```
 
-In the test files, apply the mock contracts:
-
-> Use `ArbitrumInboxMock` for L1 -> L2 messages
-
-> Use `ArbSysMock` for L2 -> L1 messages
+In the test files, inherit from `ArbitrumTest`
 
 ```solidity
-import {ArbSysMock} from "foundry-arbitrum/ArbSysMock.sol";
-import {ArbitrumInboxMock} from "foundry-arbitrum/ArbitrumInboxMock.sol";
+import {ArbitrumTest} from "foundry-arbitrum/ArbitrumTest.sol";
 
 import {L1Contract} from "../src/L1Contract.sol";
 import {L2Contract} from "../src/L2Contract.sol";
 
-contract ExampleTest is Test {
-    ArbSysMock arbsys;
-    ArbitrumInboxMock inbox;
-    
+contract ExampleTest is Test, ArbitrumTest {
     L1Contract l1Contract;
     L2Contract l2Contract;
 
     function setUp() public {
-        // Etch the mocked ArbSys to the precompile address
-        arbsys = new ArbSysMock();
-        vm.etch(address(0x0000000000000000000000000000000000000064), address(arbsys).code);
-
-        // use the mocked Arbitrum inbox where L1-to-L2 messages are executed immediately
-        inbox = new ArbitrumInboxMock();
-
         // Our L2 contract that will communicate with the L1 contract
+        // via ArbSys precompile at address(0x64) (mocked and etched in ArbitrumTest)
         l2Contract = new L2Contract();
 
         // Our L1 contract that will communicate with the L2 contract
+        // via inbox (mock deployed in ArbitrumTest)
         l1Contract = new L1Contract(address(inbox), address(l2Contract));
 
         l2Contract.setL1Target(address(l1Contract));
@@ -57,6 +42,7 @@ contract ExampleTest is Test {
 
     function testMessage() public {
         // assert how *succesful* cross-chain messages would modify state
+        // (using the mocks implies that cross-chain messages are atomic & successful)
     }
 }
 ```
